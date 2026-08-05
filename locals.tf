@@ -17,17 +17,6 @@ locals {
   resource_prefix = "${var.project_name}-${local.environment}"
 
   ####################################
-  # Workspace Specific Instance Types
-  ####################################
-
-  instance_types = {
-    default = "t3.micro"
-    dev     = "t3.micro"
-    uat     = "t3.small"
-    prod    = "t3.large"
-  }
-
-  ####################################
   # Common Tags
   ####################################
 

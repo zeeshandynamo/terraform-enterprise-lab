@@ -1,18 +1,16 @@
-provider "aws" {
+####################################
+# AWS Provider
+####################################
 
+provider "aws" {
   region = var.aws_region
 
   default_tags {
-
     tags = {
-
       Project     = var.project_name
-      Environment = var.environment
+      Environment = terraform.workspace
       ManagedBy   = "Terraform"
       Owner       = "Zeeshan Ali"
-
     }
-
   }
-
 }

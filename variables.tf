@@ -7,11 +7,6 @@ variable "project_name" {
   type        = string
 }
 
-variable "environment" {
-  description = "Deployment environment"
-  type        = string
-}
-
 ####################################
 # AWS Variables
 ####################################
