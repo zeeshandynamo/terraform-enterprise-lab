@@ -1,63 +1,37 @@
 ####################################
-# VPC Outputs
+# Network Outputs
 ####################################
 
 output "vpc_id" {
-
   description = "VPC ID"
-
-  value = aws_vpc.main.id
-
+  value       = module.network.vpc_id
 }
 
-####################################
-# Subnet Outputs
-####################################
-
 output "public_subnet_id" {
-
   description = "Public Subnet ID"
-
-  value = aws_subnet.public.id
-
+  value       = module.network.public_subnet_id
 }
 
 output "private_subnet_id" {
-
   description = "Private Subnet ID"
+  value       = module.network.private_subnet_id
+}
 
-  value = aws_subnet.private.id
-
+output "nat_gateway_id" {
+  description = "NAT Gateway ID"
+  value       = module.network.nat_gateway_id
 }
 
 ####################################
-# EC2 Outputs
+# Compute Outputs
 ####################################
 
 output "bastion_public_ip" {
-
   description = "Public IP of Bastion Host"
-
-  value = aws_instance.bastion.public_ip
-
+  value       = module.compute.bastion_public_ip
 }
 
 output "private_server_private_ip" {
-
   description = "Private IP of Private Server"
-
-  value = aws_instance.private_server.private_ip
-
-}
-
-####################################
-# NAT Gateway
-####################################
-
-output "nat_gateway_id" {
-
-  description = "NAT Gateway ID"
-
-  value = aws_nat_gateway.nat.id
-
+  value       = module.compute.private_server_private_ip
 }

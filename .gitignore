@@ -23,3 +23,6 @@ crash.log
 # OS files
 .DS_Store
 Thumbs.db
+
+final-plan.txt
+downloaded-state.tfstate
