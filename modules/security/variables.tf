@@ -13,6 +13,11 @@ variable "private_sg_name" {
   type        = string
 }
 
+variable "jenkins_sg_name" {
+  description = "Jenkins Security Group Name"
+  type        = string
+}
+
 variable "ssh_allowed_cidrs" {
   description = "CIDRs allowed to SSH into the bastion"
   type        = list(string)

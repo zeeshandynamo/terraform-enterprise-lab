@@ -17,7 +17,7 @@ module "network" {
   enable_dns_hostnames = true
 
   ####################################
-  # Workspace Aware Resource Names
+  # Resource Names
   ####################################
 
   vpc_name                 = "${local.resource_prefix}-vpc"
@@ -28,10 +28,6 @@ module "network" {
   nat_gateway_name         = "${local.resource_prefix}-nat"
   public_route_table_name  = "${local.resource_prefix}-public-rt"
   private_route_table_name = "${local.resource_prefix}-private-rt"
-
-  ####################################
-  # Common Tags
-  ####################################
 
   common_tags = local.common_tags
 }
@@ -47,6 +43,7 @@ module "security" {
 
   bastion_sg_name = "${local.resource_prefix}-bastion-sg"
   private_sg_name = "${local.resource_prefix}-private-sg"
+  jenkins_sg_name = "${local.resource_prefix}-jenkins-sg"
 
   ssh_allowed_cidrs = ["0.0.0.0/0"]
 
@@ -62,16 +59,21 @@ module "compute" {
 
   ami_id        = data.aws_ami.ubuntu.id
   instance_type = var.instance_type
-  key_name      = var.key_pair_name
+
+  jenkins_instance_type = var.jenkins_instance_type
+
+  key_name = var.key_pair_name
 
   public_subnet_id  = module.network.public_subnet_id
   private_subnet_id = module.network.private_subnet_id
 
   bastion_security_group_id = module.security.bastion_security_group_id
   private_security_group_id = module.security.private_security_group_id
+  jenkins_security_group_id = module.security.jenkins_security_group_id
 
   bastion_name        = "${local.resource_prefix}-bastion"
   private_server_name = "${local.resource_prefix}-private-server"
+  jenkins_server_name = "${local.resource_prefix}-jenkins"
 
   common_tags = local.common_tags
 }

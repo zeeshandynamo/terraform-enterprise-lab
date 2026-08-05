@@ -45,7 +45,12 @@ variable "private_subnet_cidr" {
 ####################################
 
 variable "instance_type" {
-  description = "EC2 Instance Type"
+  description = "Application EC2 Instance Type"
+  type        = string
+}
+
+variable "jenkins_instance_type" {
+  description = "Jenkins EC2 Instance Type"
   type        = string
 }
 

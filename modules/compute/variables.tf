@@ -6,6 +6,10 @@ variable "instance_type" {
   type = string
 }
 
+variable "jenkins_instance_type" {
+  type = string
+}
+
 variable "key_name" {
   type = string
 }
@@ -26,11 +30,19 @@ variable "private_security_group_id" {
   type = string
 }
 
+variable "jenkins_security_group_id" {
+  type = string
+}
+
 variable "bastion_name" {
   type = string
 }
 
 variable "private_server_name" {
+  type = string
+}
+
+variable "jenkins_server_name" {
   type = string
 }
 
