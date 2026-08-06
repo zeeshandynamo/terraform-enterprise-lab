@@ -1,28 +1,66 @@
-# Terraform working directory
-.terraform/
+####################################
+# Terraform
+####################################
 
-# Terraform state files
+.terraform/
+.terraform.lock.hcl
+
 *.tfstate
 *.tfstate.*
-
-# Terraform plan files
 *.tfplan
-plan.txt
 
-# Crash logs
 crash.log
+crash.*.log
 
-# Variable files containing secrets
-*.tfvars
+####################################
+# Terraform Variables
+####################################
+
+*.auto.tfvars
+terraform.tfvars
+
+# Keep example variable files
 !terraform.tfvars.example
 
-# Sensitive files
+####################################
+# Sensitive Files
+####################################
+
 *.pem
 *.key
+*.p12
+*.crt
 
-# OS files
+####################################
+# IDE Files
+####################################
+
+.vscode/
+.idea/
+
+####################################
+# Operating System
+####################################
+
 .DS_Store
 Thumbs.db
 
+####################################
+# AWS CLI
+####################################
+
+aws/
+
+####################################
+# Generated Files
+####################################
+
 final-plan.txt
+default-backup.tfstate
 downloaded-state.tfstate
+
+####################################
+# Logs
+####################################
+
+*.log

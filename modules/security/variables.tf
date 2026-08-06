@@ -18,6 +18,11 @@ variable "jenkins_sg_name" {
   type        = string
 }
 
+variable "vault_sg_name" {
+  description = "Vault Security Group Name"
+  type        = string
+}
+
 variable "ssh_allowed_cidrs" {
   description = "CIDRs allowed to SSH into the bastion"
   type        = list(string)
@@ -26,4 +31,14 @@ variable "ssh_allowed_cidrs" {
 variable "common_tags" {
   description = "Common tags"
   type        = map(string)
+}
+
+variable "create_jenkins" {
+  description = "Whether to create Jenkins resources"
+  type        = bool
+}
+
+variable "create_vault" {
+  description = "Whether to create Vault resources"
+  type        = bool
 }

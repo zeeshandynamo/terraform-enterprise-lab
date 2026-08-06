@@ -11,6 +11,13 @@ locals {
   environment = terraform.workspace
 
   ####################################
+  # Conditional Resources
+  ####################################
+
+  create_jenkins = terraform.workspace == "dev"
+  create_vault   = terraform.workspace == "dev"
+
+  ####################################
   # Resource Naming
   ####################################
 

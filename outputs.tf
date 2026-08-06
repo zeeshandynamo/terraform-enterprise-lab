@@ -31,7 +31,52 @@ output "bastion_public_ip" {
   value       = module.compute.bastion_public_ip
 }
 
+output "bastion_private_ip" {
+  description = "Private IP of Bastion Host"
+  value       = module.compute.bastion_private_ip
+}
+
 output "private_server_private_ip" {
   description = "Private IP of Private Server"
   value       = module.compute.private_server_private_ip
+}
+
+output "jenkins_public_ip" {
+  description = "Public IP of Jenkins Server"
+  value       = module.compute.jenkins_public_ip
+}
+
+output "jenkins_private_ip" {
+  description = "Private IP of Jenkins Server"
+  value       = module.compute.jenkins_private_ip
+}
+
+output "vault_public_ip" {
+  description = "Public IP of Vault Server"
+  value       = module.compute.vault_public_ip
+}
+
+output "vault_private_ip" {
+  description = "Private IP of Vault Server"
+  value       = module.compute.vault_private_ip
+}
+
+####################################
+# Instance IDs
+####################################
+
+output "bastion_instance_id" {
+  value = module.compute.bastion_instance_id
+}
+
+output "private_server_instance_id" {
+  value = module.compute.private_server_instance_id
+}
+
+output "jenkins_instance_id" {
+  value = module.compute.jenkins_instance_id
+}
+
+output "vault_instance_id" {
+  value = module.compute.vault_instance_id
 }
