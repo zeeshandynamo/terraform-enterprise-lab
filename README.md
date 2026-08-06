@@ -1,218 +1,346 @@
-# 🚀 Terraform Enterprise Lab
+# Terraform Enterprise Lab
 
-A production-style Terraform project demonstrating how to manage existing AWS infrastructure using Infrastructure as Code (IaC), migrate Terraform state to a remote backend, and refactor a flat Terraform project into reusable modules without recreating infrastructure.
+> Enterprise-grade AWS Infrastructure as Code using **Terraform**,
+> **HashiCorp Vault**, **Jenkins**, **IAM Roles**, and a modular
+> architecture.
 
----
+## Overview
 
-# 📌 Project Overview
+Terraform Enterprise Lab is a portfolio project demonstrating how a
+modern DevOps team provisions and manages AWS infrastructure using
+Infrastructure as Code (IaC). The project emphasizes security,
+modularity, automation, and enterprise design patterns rather than
+simply creating cloud resources.
 
-This project demonstrates enterprise Terraform workflows rather than simply provisioning new infrastructure.
+The infrastructure provides:
 
-The infrastructure was first created on AWS and then brought under Terraform management by importing existing resources into the Terraform state. The project was later migrated from a local backend to a remote S3 backend with DynamoDB state locking and finally refactored into reusable Terraform modules.
+-   Modular Terraform architecture
+-   Multi-environment configuration (dev / uat / prod)
+-   Custom VPC networking
+-   Public and private subnets
+-   Internet Gateway and NAT Gateway
+-   Bastion host
+-   Private application server
+-   Jenkins CI/CD server
+-   HashiCorp Vault server
+-   IAM Roles for EC2
+-   Secure secret management
+-   Foundation for Ansible, Kubernetes and CI/CD
 
-This workflow closely resembles how many organizations adopt Infrastructure as Code for existing cloud environments.
+------------------------------------------------------------------------
 
----
+# Architecture
 
-# 🏗️ Architecture
-
+``` text
+                       GitHub
+                          │
+                     Webhook Push
+                          │
+                          ▼
+                     Jenkins Server
+                          │
+              ┌───────────┴───────────┐
+              │                       │
+              ▼                       ▼
+      HashiCorp Vault          AWS IAM Role
+              │                       │
+      GitHub PAT (KV v2)      Temporary Credentials
+              │                       │
+              └───────────┬───────────┘
+                          ▼
+                     Terraform Apply
+                          │
+             ┌────────────┴────────────┐
+             ▼                         ▼
+         AWS Infrastructure      Future Ansible
+                          │
+     ┌───────────────┬───────────────┬───────────────┐
+     ▼               ▼               ▼               ▼
+ Bastion         Jenkins         Vault         Private Server
 ```
-                     Internet
-                         │
-                  Internet Gateway
-                         │
-                 Public Route Table
-                         │
-                 Public Subnet
-                         │
-                 Bastion Host
-                         │
-                    NAT Gateway
-                         │
-                Private Route Table
-                         │
-                Private Subnet
-                         │
-                 Private EC2 Server
-```
 
----
+------------------------------------------------------------------------
 
-# 📁 Project Structure
+# Technology Stack
 
-```
+  Category            Technologies
+  ------------------- --------------------
+  Cloud               AWS
+  IaC                 Terraform
+  Secrets             HashiCorp Vault
+  CI/CD               Jenkins
+  Authentication      IAM Roles, AppRole
+  OS                  Ubuntu Server
+  Version Control     Git, GitHub
+  Future Automation   Ansible
+
+------------------------------------------------------------------------
+
+# Features
+
+-   Modular Terraform project
+-   Reusable modules
+-   Multi-environment support
+-   Secure IAM Role authentication
+-   Jenkins integrated with Vault
+-   GitHub PAT stored in Vault
+-   No AWS access keys on Jenkins
+-   No AWS access keys on Bastion
+-   Enterprise-ready folder structure
+-   Separate network, security, compute and IAM modules
+
+------------------------------------------------------------------------
+
+# Infrastructure Components
+
+## Network
+
+-   VPC
+-   Public Subnet
+-   Private Subnet
+-   Internet Gateway
+-   NAT Gateway
+-   Public Route Table
+-   Private Route Table
+
+## Security
+
+-   Bastion Security Group
+-   Jenkins Security Group
+-   Vault Security Group
+-   Private Server Security Group
+
+## Compute
+
+-   Bastion Host
+-   Jenkins Server
+-   Vault Server
+-   Private Server
+
+## IAM
+
+-   Jenkins IAM Role
+-   Jenkins Instance Profile
+-   Bastion IAM Role
+-   Bastion Instance Profile
+-   AdministratorAccess (Lab)
+
+------------------------------------------------------------------------
+
+# Terraform Modules
+
+    modules/
+    ├── network/
+    ├── security/
+    ├── compute/
+    └── iam/
+
+## Network Module
+
+Creates networking resources including VPC, subnets, gateways and
+routing.
+
+## Security Module
+
+Creates security groups for each server.
+
+## Compute Module
+
+Creates EC2 instances and attaches IAM Instance Profiles.
+
+## IAM Module
+
+Creates IAM Roles, Instance Profiles and Policy Attachments.
+
+------------------------------------------------------------------------
+
+# Folder Structure
+
+``` text
 terraform-enterprise-lab/
-│
-├── backend.tf
-├── providers.tf
-├── versions.tf
-├── variables.tf
-├── locals.tf
-├── data.tf
-├── outputs.tf
-├── main.tf
 │
 ├── modules/
 │   ├── network/
 │   ├── security/
-│   └── compute/
+│   ├── compute/
+│   └── iam/
 │
-└── legacy-root/
+├── environments/
+│   ├── dev.tfvars
+│   ├── uat.tfvars
+│   └── prod.tfvars
+│
+├── backend.tf
+├── providers.tf
+├── versions.tf
+├── locals.tf
+├── variables.tf
+├── outputs.tf
+├── main.tf
+├── data.tf
+├── README.md
+└── .gitignore
 ```
 
----
+------------------------------------------------------------------------
 
-# ⚙️ AWS Resources Managed
+# Authentication Design
 
-- VPC
-- Public Subnet
-- Private Subnet
-- Internet Gateway
-- NAT Gateway
-- Elastic IP
-- Route Tables
-- Route Table Associations
-- Bastion Host
-- Private EC2 Server
-- Security Groups
+## AWS Authentication
 
----
+The project uses IAM Roles instead of long-lived AWS Access Keys.
 
-# 📦 Terraform Modules
+### Bastion
 
-## Network Module
+-   IAM Role attached
+-   Temporary AWS credentials
+-   No local credentials
 
-Responsible for:
+### Jenkins
 
-- VPC
-- Public Subnet
-- Private Subnet
-- Internet Gateway
-- Elastic IP
-- NAT Gateway
-- Route Tables
-- Route Table Associations
+-   IAM Role attached
+-   Uses EC2 Instance Metadata Service (IMDS)
+-   No `aws configure`
 
----
+------------------------------------------------------------------------
 
-## Security Module
+# Vault Authentication
 
-Responsible for:
+Vault stores sensitive secrets.
 
-- Bastion Security Group
-- Private Server Security Group
+Secrets include:
 
----
+-   GitHub Personal Access Token
 
-## Compute Module
+Authentication:
 
-Responsible for:
+-   AppRole
+-   Role ID
+-   Secret ID
 
-- Bastion EC2 Instance
-- Private EC2 Instance
+Jenkins authenticates to Vault using AppRole and retrieves secrets
+dynamically during pipeline execution.
 
----
+------------------------------------------------------------------------
 
-# 🔒 Remote Backend
+# Deployment Workflow
 
-Terraform state is stored remotely using:
+1.  Clone repository
+2.  Configure backend (optional)
+3.  Initialize Terraform
+4.  Select workspace
+5.  Apply environment variables
+6.  Provision infrastructure
+7.  Install Jenkins
+8.  Configure Vault
+9.  Configure IAM Roles
+10. Verify authentication
 
-- Amazon S3
-- Versioning Enabled
-- Server Side Encryption (AES256)
-- DynamoDB State Locking
+Example:
 
-Benefits:
-
-- Shared state
-- State locking
-- Version history
-- Team collaboration
-- Safer deployments
-
----
-
-# 🔄 Existing Infrastructure Import
-
-This project demonstrates importing existing AWS resources into Terraform.
-
-Resources were imported using:
-
-```bash
-terraform import
+``` bash
+terraform init
+terraform workspace select dev
+terraform plan -var-file=environments/dev.tfvars
+terraform apply -var-file=environments/dev.tfvars
 ```
 
-instead of creating them from scratch.
+------------------------------------------------------------------------
 
----
+# Verification
 
-# 🔄 Terraform State Migration
+## Terraform
 
-The project also demonstrates refactoring Terraform without rebuilding infrastructure.
-
-Terraform state was migrated using:
-
-```bash
-terraform state mv
+``` bash
+terraform validate
+terraform plan
+terraform apply
 ```
 
-This allowed the infrastructure to be reorganized into reusable modules without destroying or recreating AWS resources.
+## Jenkins IAM
 
----
-
-# 🏷️ Common Tags
-
-All resources use standardized tags.
-
-```text
-Project
-Environment
-ManagedBy
-Owner
+``` bash
+aws sts get-caller-identity
 ```
 
----
+Expected:
 
-# 🛠️ Technologies Used
+    assumed-role/terraform-enterprise-lab-dev-jenkins-role
 
-- Terraform
-- AWS EC2
-- AWS VPC
-- AWS S3
-- AWS DynamoDB
-- Git
-- GitHub
+## Bastion IAM
 
----
+``` bash
+aws sts get-caller-identity
+```
 
-# 🎯 Key Learning Outcomes
+Expected:
 
-- Infrastructure as Code (IaC)
-- Terraform State Management
-- Terraform Import
-- Terraform State Migration
-- Remote Backend Configuration
-- Terraform Modules
-- AWS Networking
-- Enterprise Project Structure
-- Infrastructure Refactoring
+    assumed-role/terraform-enterprise-lab-dev-bastion-role
 
----
+## Vault
 
-# 🚀 Future Enhancements
+``` bash
+vault status
+vault kv get secret/github
+```
 
-- Terraform Workspaces
-- Environment Separation (Dev / UAT / Prod)
-- Jenkins Integration
-- HashiCorp Vault Integration
-- Terraform Cloud / Enterprise
-- CI/CD Pipeline
-- Automated Validation
+------------------------------------------------------------------------
 
----
+# Security Best Practices
 
-# 👨‍💻 Author
+-   Modular Terraform design
+-   IAM Roles instead of static credentials
+-   Secrets stored in Vault
+-   AppRole authentication
+-   Public/private subnet separation
+-   Security Groups
+-   NAT Gateway for private outbound traffic
+-   Infrastructure defined as code
+-   Version-controlled modules
+
+------------------------------------------------------------------------
+
+# Future Enhancements
+
+-   Ansible Configuration Management
+-   Docker automation
+-   Kubernetes deployment
+-   Prometheus & Grafana
+-   EFK logging
+-   GitHub Actions
+-   Terraform Cloud backend
+-   Least-Privilege IAM policies
+-   Auto Scaling
+-   Application Load Balancer
+
+------------------------------------------------------------------------
+
+# Skills Demonstrated
+
+-   Infrastructure as Code
+-   AWS Networking
+-   Terraform Modules
+-   IAM
+-   EC2
+-   VPC
+-   Security Groups
+-   NAT Gateway
+-   Route Tables
+-   HashiCorp Vault
+-   Jenkins
+-   Secret Management
+-   CI/CD Foundations
+-   Multi-environment Infrastructure
+-   DevOps Best Practices
+
+------------------------------------------------------------------------
+
+# Author
 
 **Zeeshan Ali**
 
-DevOps Engineer | Cloud | Terraform | AWS | CI/CD | Kubernetes
+DevOps Engineer
+
+This project was built as an enterprise-style learning and portfolio
+project demonstrating secure Infrastructure as Code, cloud automation,
+and CI/CD foundations.
