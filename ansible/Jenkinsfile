@@ -1,0 +1,47 @@
+pipeline {
+    agent any
+
+    triggers {
+        githubPush()
+    }
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Run Ansible Docker Push') {
+            steps {
+                withCredentials([
+                    string(
+                        credentialsId: 'ansible-vault-password',
+                        variable: 'VAULT_PASSWORD'
+                    )
+                ]) {
+                    sh '''
+                        set +x
+
+                        printf '%s' "$VAULT_PASSWORD" > "$WORKSPACE/.vault-password"
+                        chmod 600 "$WORKSPACE/.vault-password"
+
+                        ansible-playbook \
+                            -i ansible/inventory.ini \
+                            ansible/docker-push.yml \
+                            --vault-password-file "$WORKSPACE/.vault-password"
+
+                        rm -f "$WORKSPACE/.vault-password"
+                    '''
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            sh 'rm -f "$WORKSPACE/.vault-password"'
+        }
+    }
+}
