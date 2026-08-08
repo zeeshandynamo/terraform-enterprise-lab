@@ -49,9 +49,7 @@ resource "aws_security_group" "private_sg" {
 }
 
 resource "aws_security_group" "jenkins_sg" {
-
-  count = var.create_jenkins ? 1 : 0
-
+  count       = var.create_jenkins ? 1 : 0
   name        = var.jenkins_sg_name
   description = "Security group for Jenkins Server"
   vpc_id      = var.vpc_id
@@ -82,12 +80,10 @@ resource "aws_security_group" "jenkins_sg" {
   tags = merge(var.common_tags, {
     Name = var.jenkins_sg_name
   })
-}	
+}
 
 resource "aws_security_group" "vault_sg" {
-
-  count = var.create_vault ? 1 : 0
-
+  count       = var.create_vault ? 1 : 0
   name        = var.vault_sg_name
   description = "Security group for Vault Server"
   vpc_id      = var.vpc_id
