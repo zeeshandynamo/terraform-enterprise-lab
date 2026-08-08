@@ -152,6 +152,21 @@ pipeline {
                 '''
             }
         }
+
+        stage('Terraform Apply') {
+            steps {
+                sh '''
+                    echo "========================================"
+                    echo "Terraform Apply"
+                    echo "========================================"
+
+                    terraform apply \
+                        -input=false \
+                        -auto-approve \
+                        tfplan
+                '''
+            }
+        }
     }
 
     post {
@@ -159,10 +174,7 @@ pipeline {
         success {
             echo '''
 ========================================
-PIPELINE SUCCESS
-========================================
-GitHub → Jenkins → Vault → AWS IAM → Terraform
-All validation and planning stages completed successfully.
+Terraform Pipeline Completed Successfully
 ========================================
 '''
         }
@@ -170,10 +182,9 @@ All validation and planning stages completed successfully.
         failure {
             echo '''
 ========================================
-PIPELINE FAILED
+Terraform Pipeline Failed
 ========================================
 Check the failed stage in the Jenkins console output.
-========================================
 '''
         }
 
