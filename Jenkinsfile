@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    triggers {
+        githubPush()
+    }
+
     environment {
         VAULT_ADDR = 'http://10.0.1.184:8200'
         TERRAFORM_WORKSPACE = 'dev'
